@@ -16,6 +16,7 @@ library(haven)
 library(ggplot2)
 library(dplyr)
 library (haven)
+library(ggsano)
 ## helpers
 
 # import the data
@@ -302,12 +303,21 @@ server <- function(input, output) {
       
       tmp.aggr <- tmp %>%
         group_by(SD02a) %>%
-        summarise(n = sum(n))
+        summarise(n = sum(n)) %>% ungroup() %>% 
+        mutate(total = sum(n), percentage = n/total*100,
+               sex = case_when(SD02a == 1 ~ "Male",
+                               SD02a == 2 ~ "Female"))
       
       ## plot
-      sociodemo <- 
-        ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = SD02a, y = n), stat = "identity")
+      sociodemo <- tmp.aggr %>% ggplot() +
+        geom_bar(aes(x = sex, y = percentage), 
+                 stat = "identity", fill = "#3AAA35FF") + 
+        sciensano_style() +
+        theme(axis.title = element_text(size=18, face = "bold"),
+              axis.text = element_text(size = 12),
+              title = element_text((size = 20))) +
+        ylab("subpopulation size (%)") + xlab("sex") +
+        title("Percentage of the survey population per sex")
       
     }else if (input$var_sociodemo == "Region") {
       tmp <- belhealth.aggr

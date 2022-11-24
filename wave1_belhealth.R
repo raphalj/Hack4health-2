@@ -26,7 +26,7 @@ belhealth_wave1_final <- read_sas("./belhealth_wave1_final.sas7bdat")
 
 ## create aggregated dataset by strata
 belhealth.aggr <- belhealth_wave1_final %>%
-  group_by(SD02a, age4n, regio) %>%
+  group_by(SD02a, age4n, regio, wave, et_1) %>%
   summarise(n = n()) %>%
   ungroup()
 
@@ -43,16 +43,14 @@ belhealth.aggr$regio_char[belhealth.aggr$regio == 1] <- "Flanders"
 belhealth.aggr$regio_char[belhealth.aggr$regio == 2] <- "Brussels"
 belhealth.aggr$regio_char[belhealth.aggr$regio == 3] <- "Wallonia"
 
+# Create column sex
+belhealth.aggr <- belhealth.aggr %>% 
+  
+  mutate(sex = case_when(SD02a == 1 ~ "Male",
+                         SD02a == 2 ~ "Female",
+                         TRUE ~ NA_character_))
+
 # create a variable for the procentage of pop
-belhealth.aggr <- belhealth.aggr %>%
-  ungroup() %>%
-  mutate(pop_sum = sum(n),
-         pop_perc = n/pop_sum)
-
-belhealth.aggr <- belhealth.aggr %>%
-  ungroup() %>%
-  mutate(pop_sum = sum(n))
-
 belhealth.aggr <- belhealth.aggr %>%
   ungroup() %>%
   mutate(pop_sum = sum(n),
@@ -105,7 +103,7 @@ ui <- navbarPage(
           inputId = "var_sociodemo",
           label = "Variable", 
           choices = 
-            c("Age", "Sex", "Region", "Wave", "Education", "Householdtype", "Occupation")
+            c("Age", "Sex", "Region")
         ),
         
         ## filter dataset by
@@ -151,32 +149,6 @@ ui <- navbarPage(
                 "31-45" = 2,
                 "46-65" = 3,
                 "65+" = 4)
-          )
-        ),
-        conditionalPanel(
-          condition = "input.var_sociodemo != 'Wave'",
-          
-          selectizeInput(
-            inputId = "wave_sociodemo",
-            label = "Wave",
-            choices = 
-              c(
-                0:1
-              )
-          )
-        ),
-        conditionalPanel(
-          condition = "input.var_sociodemo != 'Education'",
-          
-          selectizeInput(
-            inputId = "education_sociodemo",
-            label = "Education",
-            choices = 
-              list(
-                "All" = 0,
-                "Low educated" = 1,
-                "High educated" = 2
-              )
           )
         )
         
@@ -301,17 +273,13 @@ server <- function(input, output) {
         tmp <- subset(tmp, SD02a == input$sex_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
-      
       tmp.aggr <- tmp %>%
         group_by(age4n_char) %>%
-        summarise(n = n())
+        summarise(pop_perc = sum(pop_perc))
       
       ## plot
       sociodemo <- 
-        ggplot(data = belhealth.aggr) +
+        ggplot(data = tmp.aggr) +
         geom_bar(aes(x = age4n_char, y = pop_perc), stat = "identity")+
         labs(x = 'Age category', y = '% of participants')+
         theme(axis.title.y = element_text(margin = margin(r = 25)))
@@ -329,42 +297,31 @@ server <- function(input, output) {
         tmp <- subset(tmp, age4n == input$age_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
-      
       tmp.aggr <- tmp %>%
-        group_by(SD02a) %>%
-        summarise(n = sum(n)) %>% ungroup() %>% 
-        mutate(total = sum(n), percentage = n/total*100,
-               sex = case_when(SD02a == 1 ~ "Male",
-                               SD02a == 2 ~ "Female"))
+        group_by(sex) %>%
+        summarise(pop_perc = sum(pop_perc))
       
       ## plot
       sociodemo <- tmp.aggr %>% ggplot() +
-        geom_bar(aes(x = sex, y = percentage), 
+        geom_bar(aes(x = sex, y = pop_perc), 
                  stat = "identity", fill = "#3AAA35FF") + 
         sciensano_style() +
         theme(axis.title = element_text(size=18, face = "bold"),
               axis.text = element_text(size = 12),
               title = element_text((size = 20))) +
         ylab("subpopulation size (%)") + xlab("sex") +
-        title("Percentage of the survey population per sex")
+        labs(title ="Percentage of the survey population per sex")
       
     }else if (input$var_sociodemo == "Region") {
       tmp <- belhealth.aggr
       
       ## subset
       if (input$sex_sociodemo != 0) {
-        tmp <- subset(tmp, SD02a == input$region_sociodemo)
+        tmp <- subset(tmp, SD02a == input$sex_sociodemo)
       }
       
       if (input$age_sociodemo != 0) {
         tmp <- subset(tmp, age4n == input$age_sociodemo)
-      }
-      
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
       }
       
       tmp.aggr <- tmp %>%
@@ -425,7 +382,7 @@ server <- function(input, output) {
       }
       
       if (input$age_sociodemo != 0) {
-        tmp <- subset(tmp, age4 == input$age_sociodemo)
+        tmp <- subset(tmp, age4n == input$age_sociodemo)
       }
       
       if (input$wave_sociodemo != 0) {

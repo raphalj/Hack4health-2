@@ -8,8 +8,8 @@
 #install.packages("haven")
 #install.packages("ggplot2")
 #install.packages("dplyr")
-devtools::install_github("sciensanogit/ggsano")
-install.packages("devtools")
+#devtools::install_github("sciensanogit/ggsano")
+#install.packages("devtools")
 library(shiny)
 library(readr)
 library(fontawesome)
@@ -113,7 +113,7 @@ ui <- navbarPage(
           inputId = "var_sociodemo",
           label = "Variable", 
           choices = 
-            c("Age", "Sex", "Region", "Wave", "Education", "Householdtype", "Occupation")
+            c("Age", "Sex", "Region",  "Education", "Householdtype", "Occupation")
         ),
         
         ## filter dataset by
@@ -161,18 +161,7 @@ ui <- navbarPage(
                 "65+" = 4)
           )
         ),
-        conditionalPanel(
-          condition = "input.var_sociodemo != 'Wave'",
-          
-          selectizeInput(
-            inputId = "wave_sociodemo",
-            label = "Wave",
-            choices = 
-              c(
-                0:1
-              )
-          )
-        ),
+        
         conditionalPanel(
           condition = "input.var_sociodemo != 'Education'",
           
@@ -209,7 +198,7 @@ ui <- navbarPage(
           inputId = "var_results",
           label = "Variable", 
           choices = 
-            c("Depression", "Anxiety", "Life satisfaction","Social unsatisfaction", "Wave")
+            c("Depression", "Anxiety", "Life satisfaction","Social unsatisfaction")
         ),
         
         ## filter dataset by
@@ -257,18 +246,7 @@ ui <- navbarPage(
                 "65+" = 4)
           )
         ),
-        conditionalPanel(
-          condition = "input.var_sociodemo != 'Wave'",
-          
-          selectizeInput(
-            inputId = "wave_sociodemo",
-            label = "Wave",
-            choices = 
-              c(
-                1:2
-              )
-          )
-        )
+      
         
       ),
       
@@ -309,9 +287,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, SD02a == input$sex_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+      
       
       tmp.aggr <- tmp %>%
         group_by(age4n_char) %>%
@@ -325,7 +301,7 @@ server <- function(input, output) {
         theme(axis.title = element_text(size=18, face = "bold"),
               axis.text = element_text(size = 12),
               title = element_text((size = 20))) +
-        ylab("subpopulation size (%)") + xlab("sex") +
+        ylab("subpopulation size (%)") + xlab("age") +
         title("Percentage of the survey population per age")
         
       
@@ -341,9 +317,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, age4n == input$age_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+     
       
       tmp.aggr <- tmp %>%
         group_by(sex_char) %>%
@@ -372,9 +346,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, age4n == input$age_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+      
       
       tmp.aggr <- tmp %>%
         group_by(regio_char) %>%
@@ -388,7 +360,7 @@ server <- function(input, output) {
         theme(axis.title = element_text(size=18, face = "bold"),
               axis.text = element_text(size = 12),
               title = element_text((size = 20))) +
-        ylab("subpopulation size (%)") + xlab("sex") +
+        ylab("subpopulation size (%)") + xlab("region") +
         title("Percentage of the survey population per region")
 
     }
@@ -418,9 +390,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, SD02a == input$sex_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+    
       
       tmp.aggr <- tmp %>%
         group_by(AD_6) %>%
@@ -443,9 +413,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, age4 == input$age_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+      
       
       tmp.aggr <- tmp %>%
         group_by(AD_1) %>%

@@ -9,6 +9,7 @@
 #install.packages("ggplot2")
 #install.packages("dplyr")
 
+
 library(shiny)
 library(readr)
 library(fontawesome)
@@ -17,6 +18,7 @@ library(ggplot2)
 library(dplyr)
 library (haven)
 library(ggsano)
+library(sas7bdat)
 ## helpers
 
 # import the data
@@ -25,9 +27,36 @@ belhealth_wave1_final <- read_sas("./belhealth_wave1_final.sas7bdat")
 ## create aggregated dataset by strata
 belhealth.aggr <- belhealth_wave1_final %>%
   group_by(SD02a, age4n, regio) %>%
-  summarise(n = n())
+  summarise(n = n()) %>%
+  ungroup()
 
+# create a char variable for the age group
+belhealth.aggr$age4n_char <- NaN
+belhealth.aggr$age4n_char[belhealth.aggr$age4n == 1] <- "18 - 29"
+belhealth.aggr$age4n_char[belhealth.aggr$age4n == 2] <- "30 - 49"
+belhealth.aggr$age4n_char[belhealth.aggr$age4n == 3] <- "50 - 64"
+belhealth.aggr$age4n_char[belhealth.aggr$age4n == 4] <- "65+"
 
+# create a char variable for the region
+belhealth.aggr$regio_char <- NaN
+belhealth.aggr$regio_char[belhealth.aggr$regio == 1] <- "Flanders"
+belhealth.aggr$regio_char[belhealth.aggr$regio == 2] <- "Brussels"
+belhealth.aggr$regio_char[belhealth.aggr$regio == 3] <- "Wallonia"
+
+# create a variable for the procentage of pop
+belhealth.aggr <- belhealth.aggr %>%
+  ungroup() %>%
+  mutate(pop_sum = sum(n),
+         pop_perc = n/pop_sum)
+
+belhealth.aggr <- belhealth.aggr %>%
+  ungroup() %>%
+  mutate(pop_sum = sum(n))
+
+belhealth.aggr <- belhealth.aggr %>%
+  ungroup() %>%
+  mutate(pop_sum = sum(n),
+         pop_perc = (n/pop_sum)*100)
 
 ## APP
 
@@ -277,13 +306,16 @@ server <- function(input, output) {
       }
       
       tmp.aggr <- tmp %>%
-        group_by(age4n) %>%
-        summarise(n = sum(n))
+        group_by(age4n_char) %>%
+        summarise(n = n())
       
       ## plot
       sociodemo <- 
-        ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = age4n, y = n), stat = "identity")
+        ggplot(data = belhealth.aggr) +
+        geom_bar(aes(x = age4n_char, y = pop_perc), stat = "identity")+
+        labs(x = 'Age category', y = '% of participants')+
+        theme(axis.title.y = element_text(margin = margin(r = 25)))
+        
       
     } else if (input$var_sociodemo == "Sex") {
       tmp <- belhealth.aggr
@@ -336,13 +368,14 @@ server <- function(input, output) {
       }
       
       tmp.aggr <- tmp %>%
-        group_by(regio) %>%
-        summarise(n = sum(n))
+        group_by(regio_char) %>%
+        summarise(pop_perc = sum(pop_perc))
       
       ## plot
       sociodemo <- 
         ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = regio, y = n), stat = "identity")
+        geom_bar(aes(x = regio_char, y = pop_perc), stat = "identity")
+
     }
     
     sociodemo

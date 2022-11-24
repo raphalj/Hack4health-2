@@ -8,8 +8,8 @@
 #install.packages("haven")
 #install.packages("ggplot2")
 #install.packages("dplyr")
-
-
+#devtools::install_github("sciensanogit/ggsano")
+#install.packages("devtools")
 library(shiny)
 library(readr)
 library(fontawesome)
@@ -43,12 +43,14 @@ belhealth.aggr$regio_char[belhealth.aggr$regio == 1] <- "Flanders"
 belhealth.aggr$regio_char[belhealth.aggr$regio == 2] <- "Brussels"
 belhealth.aggr$regio_char[belhealth.aggr$regio == 3] <- "Wallonia"
 
-# Create column sex
-belhealth.aggr <- belhealth.aggr %>% 
-  
-  mutate(sex = case_when(SD02a == 1 ~ "Male",
-                         SD02a == 2 ~ "Female",
-                         TRUE ~ NA_character_))
+
+# create a char variable for the sex
+belhealth.aggr$sex_char <- NaN
+belhealth.aggr$sex_char[belhealth.aggr$SD02a == 1] <- "Male"
+belhealth.aggr$sex_char[belhealth.aggr$SD02a == 2] <- "Female"
+
+
+
 
 # create a variable for the procentage of pop
 belhealth.aggr <- belhealth.aggr %>%
@@ -102,8 +104,8 @@ ui <- navbarPage(
         selectizeInput(
           inputId = "var_sociodemo",
           label = "Variable", 
-          choices = 
-            c("Age", "Sex", "Region")
+          choices = c("Age", "Sex", "Region")
+ 
         ),
         
         ## filter dataset by
@@ -173,7 +175,7 @@ ui <- navbarPage(
           inputId = "var_results",
           label = "Variable", 
           choices = 
-            c("Depression", "Anxiety", "Life satisfaction","Social unsatisfaction", "Wave")
+            c("Depression", "Anxiety", "Life satisfaction","Social unsatisfaction")
         ),
         
         ## filter dataset by
@@ -221,18 +223,7 @@ ui <- navbarPage(
                 "65+" = 4)
           )
         ),
-        conditionalPanel(
-          condition = "input.var_sociodemo != 'Wave'",
-          
-          selectizeInput(
-            inputId = "wave_sociodemo",
-            label = "Wave",
-            choices = 
-              c(
-                1:2
-              )
-          )
-        )
+      
         
       ),
       
@@ -279,10 +270,14 @@ server <- function(input, output) {
       
       ## plot
       sociodemo <- 
-        ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = age4n_char, y = pop_perc), stat = "identity")+
-        labs(x = 'Age category', y = '% of participants')+
-        theme(axis.title.y = element_text(margin = margin(r = 25)))
+        ggplot(data = belhealth.aggr) +
+        geom_bar(aes(x = age4n_char, y = pop_perc), stat = "identity", fill = "#3AAA35FF") + 
+        sciensano_style() +
+        theme(axis.title = element_text(size=18, face = "bold"),
+              axis.text = element_text(size = 12),
+              title = element_text((size = 20))) +
+        ylab("subpopulation size (%)") + xlab("age") +
+        title("Percentage of the survey population per age")
         
       
     } else if (input$var_sociodemo == "Sex") {
@@ -296,14 +291,15 @@ server <- function(input, output) {
       if (input$age_sociodemo != 0) {
         tmp <- subset(tmp, age4n == input$age_sociodemo)
       }
+     
       
       tmp.aggr <- tmp %>%
-        group_by(sex) %>%
-        summarise(pop_perc = sum(pop_perc))
+        group_by(sex_char) %>%
+        summarise(n = sum(n))
       
       ## plot
-      sociodemo <- tmp.aggr %>% ggplot() +
-        geom_bar(aes(x = sex, y = pop_perc), 
+      sociodemo <-  ggplot(data = belhealth.aggr) +
+        geom_bar(aes(x = sex_char, y = pop_perc),
                  stat = "identity", fill = "#3AAA35FF") + 
         sciensano_style() +
         theme(axis.title = element_text(size=18, face = "bold"),
@@ -331,7 +327,13 @@ server <- function(input, output) {
       ## plot
       sociodemo <- 
         ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = regio_char, y = pop_perc), stat = "identity")
+        geom_bar(aes(x = regio_char, y = pop_perc), stat = "identity", fill = "#3AAA35FF") + 
+        sciensano_style() +
+        theme(axis.title = element_text(size=18, face = "bold"),
+              axis.text = element_text(size = 12),
+              title = element_text((size = 20))) +
+        ylab("subpopulation size (%)") + xlab("region") +
+        title("Percentage of the survey population per region")
 
     }
     
@@ -360,9 +362,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, SD02a == input$sex_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+    
       
       tmp.aggr <- tmp %>%
         group_by(AD_6) %>%
@@ -385,9 +385,7 @@ server <- function(input, output) {
         tmp <- subset(tmp, age4n == input$age_sociodemo)
       }
       
-      if (input$wave_sociodemo != 0) {
-        tmp <- subset(tmp, wave == input$wave_sociodemo)
-      }
+      
       
       tmp.aggr <- tmp %>%
         group_by(AD_1) %>%

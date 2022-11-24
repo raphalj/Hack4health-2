@@ -277,7 +277,7 @@ server <- function(input, output) {
               axis.text = element_text(size = 12),
               title = element_text((size = 20))) +
         ylab("subpopulation size (%)") + xlab("age") +
-        title("Percentage of the survey population per age")
+        labs(title = "Percentage of the survey population per age")
         
       
     } else if (input$var_sociodemo == "Sex") {
@@ -333,7 +333,7 @@ server <- function(input, output) {
               axis.text = element_text(size = 12),
               title = element_text((size = 20))) +
         ylab("subpopulation size (%)") + xlab("region") +
-        title("Percentage of the survey population per region")
+        labs(title = "Percentage of the survey population per region")
 
     }
     

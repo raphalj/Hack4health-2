@@ -9,6 +9,7 @@
 #install.packages("ggplot2")
 #install.packages("dplyr")
 
+
 library(shiny)
 library(readr)
 library(fontawesome)
@@ -26,7 +27,19 @@ belhealth.aggr <- belhealth_wave1_final %>%
   group_by(SD02a, age4n, regio) %>%
   summarise(n = n())
 
+belhealth.aggr[belhealth.aggr$age4n == 1,"age4n_char"] <- "18 - 29 y"
+belhealth.aggr[belhealth.aggr$age4n == 2,"age4n_char"] <- "30 - 49 y"
+belhealth.aggr[belhealth.aggr$age4n == 3,"age4n_char"] <- "50 - 64 y"
+belhealth.aggr[belhealth.aggr$age4n == 4,"age4n_char"] <- "65+ y"
 
+belhealth.aggr <- belhealth.aggr %>%
+  ungroup() %>%
+  mutate(pop_sum = sum(n))
+
+belhealth.aggr <- belhealth.aggr %>%
+  ungroup() %>%
+  mutate(pop_sum = sum(n),
+         pop_perc = (n/pop_sum)*100)
 
 ## APP
 
@@ -276,13 +289,16 @@ server <- function(input, output) {
       }
       
       tmp.aggr <- tmp %>%
-        group_by(age4n) %>%
-        summarise(n = sum(n))
+        group_by(age4n_char) %>%
+        summarise(n = n())
       
       ## plot
       sociodemo <- 
-        ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = age4n, y = n), stat = "identity")
+        ggplot(data = belhealth.aggr) +
+        geom_bar(aes(x = age4n_char, y = pop_perc), stat = "identity")+
+        labs(x = 'Age category', y = '% of participants')+
+        theme(axis.title.y = element_text(margin = margin(r = 25)))
+        
       
     } else if (input$var_sociodemo == "Sex") {
       tmp <- belhealth.aggr
@@ -333,6 +349,7 @@ server <- function(input, output) {
       sociodemo <- 
         ggplot(data = tmp.aggr) +
         geom_bar(aes(x = regio, y = n), stat = "identity")
+      
     }
     
     sociodemo

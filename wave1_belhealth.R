@@ -19,6 +19,7 @@ library(dplyr)
 library (haven)
 library(ggsano)
 library(sas7bdat)
+library(tidyr)
 ## helpers
 
 # import the data
@@ -185,45 +186,62 @@ ui <- navbarPage(
           condition = "input.var_results != 'Region'",
           
           selectizeInput(
-            inputId = "region_sociodemo",
+            inputId = "region_sociodemo_2", # added 2 to have a different name than with socio-demo
             label = "Region",
             choices = 
               list(
-                "Belgium" = 0,
+                #"Belgium" = 0,
                 "Brussels" = 2,
                 "Flanders" = 1,
                 "Wallonia" = 3)
           )
         ),
         conditionalPanel(
-          condition = "input.var_sociodemo != 'Sex'",
+          # change to input.var_results instead of input.var_sociodemo
+          condition = "input.var_results != 'Sex'",
           
           selectizeInput(
-            inputId = "sex_sociodemo",
+            inputId = "sex_sociodemo_2",  # added 2 to have a different name than with socio-demo
             label = "Sex",
             choices = 
               list(
-                "Both sexes" = 0,
+                #"Both sexes" = list(1,2),
                 "Female" = 2,
                 "Male" = 1)
           )
         ),
+        # change to input.var_results instead of input.var_sociodemo
         conditionalPanel(
-          condition = "input.var_sociodemo != 'Age'",
+          condition = "input.var_results != 'Age'",
           
           selectizeInput(
-            inputId = "age_sociodemo",
+            inputId = "age_sociodemo_2",  # added 2 to have a different name than with socio-demo
             label = "Age",
             choices = 
               list(
-                "All Ages" = 0,
+                #"All Ages" = 0,
                 "18-30" = 1,
                 "31-45" = 2,
                 "46-65" = 3,
                 "65+" = 4)
           )
         ),
-      
+        
+        # removed wave button
+        #conditionalPanel(
+        #  condition = "input.var_sociodemo != 'Wave'",
+        #  
+        #  selectizeInput(
+        #    inputId = "wave_sociodemo",
+        #    label = "Wave",
+        #    choices = 
+        #      c(
+        #        1:2
+        #      )
+        #  )
+        # )
+        
+        
         
       ),
       
@@ -232,7 +250,7 @@ ui <- navbarPage(
       
     )
     
-  ),
+  )
   
   
   
@@ -348,56 +366,83 @@ server <- function(input, output) {
   
   
   
+  ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ##+                   RESULTS #####
+  ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  belhealth_wave1_final$SO_4 <- ifelse(belhealth_wave1_final$SO_4 == -1, NA, belhealth_wave1_final$SO_4)
+  colnames(belhealth_wave1_final)[which(colnames(belhealth_wave1_final) == "AD_6")] <- "Depression"
+  colnames(belhealth_wave1_final)[which(colnames(belhealth_wave1_final) == "AD_1")] <- "Anxiety"
+  colnames(belhealth_wave1_final)[which(colnames(belhealth_wave1_final) == "ST01_2")] <- "Life satisfaction"
+  colnames(belhealth_wave1_final)[which(colnames(belhealth_wave1_final) == "SO_4")] <- "Social unsatisfaction"
+  
+  
+  
   output$results <- renderPlot({
     
-    if (input$var_results == "Depression") {
-      tmp <- dta.aggr
-      
-      ## subset
-      if (input$region_sociodemo != 0) {
-        tmp <- subset(tmp, regio == input$region_sociodemo)
-      }
-      
-      if (input$sex_sociodemo != 0) {
-        tmp <- subset(tmp, SD02a == input$sex_sociodemo)
-      }
-      
+    belhealth_wave1_final["ID_PLOT"] <- belhealth_wave1_final[input$var_results]
+    #print( belhealth_wave1_final$ID_PLOT)
     
-      
-      tmp.aggr <- tmp %>%
-        group_by(AD_6) %>%
-        summarise(n = sum(n))
-      
-      ## plot
-      sociodemo <- 
-        ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = AD_6, y = n), stat = "identity")
-      
-    } else if (input$var_results == "Anxiety") {
-      tmp <- dta.aggr
-      
-      ## subset
-      if (input$region_sociodemo != 0) {
-        tmp <- subset(tmp, regio == input$region_sociodemo)
-      }
-      
-      if (input$age_sociodemo != 0) {
-        tmp <- subset(tmp, age4n == input$age_sociodemo)
-      }
-      
-      
-      
-      tmp.aggr <- tmp %>%
-        group_by(AD_1) %>%
-        summarise(n = sum(n))
-      
-      ## plot
-      sociodemo <- 
-        ggplot(data = tmp.aggr) +
-        geom_bar(aes(x = AD_1, y = n), stat = "identity")
-    }
+    ggplot(belhealth_wave1_final[belhealth_wave1_final$SD02a == input$sex_sociodemo_2 &
+                                   belhealth_wave1_final$regio == input$region_sociodemo_2 &
+                                   belhealth_wave1_final$age4n == input$age_sociodemo_2,] %>% drop_na(ID_PLOT), aes(x = as.factor(ID_PLOT) , y = (..count..)/sum(..count..))) + geom_bar(fill = "forestgreen") + theme_bw() + 
+      ggtitle(paste("Bargraph counts", input$var_results)) + labs(y = paste("Count", input$var_results), x = "") +
+      geom_text(
+        aes(label=round(after_stat(count / sum(count) * 100),2)),
+        stat='count',
+        nudge_y=0.05,
+        va='bottom',
+        format_string='{:.1f}%'
+      )
     
-    results
+    
+    # 
+    # if (input$var_results == "Depression") {
+    #   tmp <- dta.aggr
+    #   
+    #   ## subset
+    #   if (input$region_sociodemo != 0) {
+    #     tmp <- subset(tmp, regio == input$region_sociodemo)
+    #   }
+    #   
+    #   if (input$sex_sociodemo != 0) {
+    #     tmp <- subset(tmp, SD02a == input$sex_sociodemo)
+    #   }
+    #   
+    #   
+    #   
+    #   tmp.aggr <- tmp %>%
+    #     group_by(AD_6) %>%
+    #     summarise(n = sum(n))
+    #   
+    #   ## plot
+    #   sociodemo <- 
+    #     ggplot(data = tmp.aggr) +
+    #     geom_bar(aes(x = AD_6, y = n), stat = "identity")
+    #   
+    # } else if (input$var_results == "Anxiety") {
+    #   tmp <- dta.aggr
+    #   
+    #   ## subset
+    #   if (input$region_sociodemo != 0) {
+    #     tmp <- subset(tmp, regio == input$region_sociodemo)
+    #   }
+    #   
+    #   if (input$age_sociodemo != 0) {
+    #     tmp <- subset(tmp, age4n == input$age_sociodemo)
+    #   }
+    #   
+    #   
+    #   
+    #   tmp.aggr <- tmp %>%
+    #     group_by(AD_1) %>%
+    #     summarise(n = sum(n))
+    #   
+    #   ## plot
+    #   sociodemo <- 
+    #     ggplot(data = tmp.aggr) +
+    #     geom_bar(aes(x = AD_1, y = n), stat = "identity")
+    # }
+    # 
     
   })
   

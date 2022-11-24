@@ -18,6 +18,8 @@ library(dplyr)
 library (haven)
 ## helpers
 
+# import the data
+belhealth_wave1_final <- read_sas("./belhealth_wave1_final.sas7bdat")
 
 ## create aggregated dataset by strata
 belhealth.aggr <- belhealth_wave1_final %>%

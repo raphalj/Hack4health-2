@@ -26,8 +26,7 @@ belhealth.aggr <- belhealth_wave1_final %>%
   group_by(SD02a, age4n, regio) %>%
   summarise(n = n())
 
-table1 <- table(belhealth_wave1_final$AD_1)
-dep <- prop.table(table1)
+
 
 ## APP
 
@@ -153,7 +152,7 @@ ui <- navbarPage(
         
         
       ),
-      mainPanel (dataTableOutput("sociodemo"))
+      mainPanel (plotOutput("sociodemo"))
     ) 
   ),
   ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -236,7 +235,7 @@ ui <- navbarPage(
       ),
       
       ## OUTPUT
-      mainPanel (dataTableOutput("results")) # creates a table for the results
+      mainPanel (plotOutput("results")) # creates a table for the results
       
     )
     
@@ -347,10 +346,10 @@ server <- function(input, output) {
   
   
   
-  output$results <- renderDataTable({
+  output$results <- renderPlot({
     
     if (input$var_results == "Depression") {
-      tmp <- belhealth_wave1_final
+      tmp <- dta.aggr
       
       ## subset
       if (input$region_sociodemo != 0) {
@@ -364,20 +363,18 @@ server <- function(input, output) {
       if (input$wave_sociodemo != 0) {
         tmp <- subset(tmp, wave == input$wave_sociodemo)
       }
-      if (input$age_sociodemo != 0) {
-        tmp <- subset(tmp, age4n == input$age_sociodemo)
-      }
       
       tmp.aggr <- tmp %>%
-        count(AD_6) %>%
-       # table1 <- table(belhealth_wave1_final$AD_6) %>%
-       mutate(percent=n/sum(n)*100)
+        group_by(AD_6) %>%
+        summarise(n = sum(n))
       
-      ## table
-     
+      ## plot
+      sociodemo <- 
+        ggplot(data = tmp.aggr) +
+        geom_bar(aes(x = AD_6, y = n), stat = "identity")
       
     } else if (input$var_results == "Anxiety") {
-      tmp <- belhealth_wave1_final
+      tmp <- dta.aggr
       
       ## subset
       if (input$region_sociodemo != 0) {
@@ -396,9 +393,10 @@ server <- function(input, output) {
         group_by(AD_1) %>%
         summarise(n = sum(n))
       
-      ## table
-      
-       
+      ## plot
+      sociodemo <- 
+        ggplot(data = tmp.aggr) +
+        geom_bar(aes(x = AD_1, y = n), stat = "identity")
     }
     
     results

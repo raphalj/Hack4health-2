@@ -270,7 +270,7 @@ server <- function(input, output) {
       
       ## plot
       sociodemo <- 
-        ggplot(data = belhealth.aggr) +
+        ggplot(data = tmp.aggr) +
         geom_bar(aes(x = age4n_char, y = pop_perc), stat = "identity", fill = "#3AAA35FF") + 
         sciensano_style() +
         theme(axis.title = element_text(size=18, face = "bold"),
@@ -295,10 +295,10 @@ server <- function(input, output) {
       
       tmp.aggr <- tmp %>%
         group_by(sex_char) %>%
-        summarise(n = sum(n))
+        summarise(pop_perc = sum(pop_perc))
       
       ## plot
-      sociodemo <-  ggplot(data = belhealth.aggr) +
+      sociodemo <-  ggplot(data = tmp.aggr) +
         geom_bar(aes(x = sex_char, y = pop_perc),
                  stat = "identity", fill = "#3AAA35FF") + 
         sciensano_style() +

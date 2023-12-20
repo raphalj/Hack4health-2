@@ -16,14 +16,14 @@
 # file.exists("figure_translation.csv")
 library(dplyr)
 library(quarto)
+# library(rmarkdown)
 library(ggplot2)
 library(knitr)
 data("Orange")
 
 # load functions
 source("fct.R")
-Table_lng <- read.csv("figure_translation.csv")
-
+Table_lng <- read.csv("figure_translation.csv", encoding = "latin1")
 
 ###################################
 ##### Figure 1 ####
@@ -60,8 +60,8 @@ table_orange_EN <- Orange_table_kbl(Orange, Table_lng, "EN")
 
 # save image
 # rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
-# save.image("./wd.RData")
-# 
-# # render quarto
-# quarto_render("report.qmd", output_format = "html")
-# shell.exec(file.path("report.html", fsep = "\\"))
+save.image("./wd.RData")
+
+# render quarto
+quarto_render("./quarto/Reporting-oranges.qmd", output_format = "docx")
+shell.exec(file.path("quarto", "Reporting-oranges.docx", fsep = "\\"))

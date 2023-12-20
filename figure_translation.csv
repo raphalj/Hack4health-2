@@ -1,2 +1,4 @@
-var,FR,NL,EN
-title,lol_fr,lol_nl,lol_en
+type,var,FR,NL,EN
+Orange_table,colnames,"c(""Tree"", ""min age"", ""min circumference"",""max age"", ""max circumference"")","c(""Tree"", ""min age"", ""min circumference"",""max age"", ""max circumference"")","c(""Tree"", ""min age"", ""min circumference"",""max age"", ""max circumference"")"
+Orange_table,caption,Min and max age and circumference by tree group,Min and max age and circumference by tree group,Min and max age and circumference by tree group
+Orange_table,footnote,5 trees were followed durign this study.,5 trees were followed durign this study.,5 trees were followed durign this study.

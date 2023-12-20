@@ -17,6 +17,7 @@
 library(dplyr)
 library(quarto)
 library(ggplot2)
+library(knitr)
 data("Orange")
 
 ###################################
@@ -40,9 +41,26 @@ Orange %>%
 ###################################
 ##### Table 1 ####
 ###################################
-orange_mean <- Orange %>%
+Orange_min <- Orange %>%
   group_by(Tree) %>%
-  summarise_at(vars(c(age, circumference)), list(mean = mean))
+  summarise_at(vars(c(age, circumference)), list(min = min))
+
+Orange_max <- Orange %>%
+  group_by(Tree) %>%
+  summarise_at(vars(c(age, circumference)), list(max = max))
+
+Orange_table <- merge(Orange_min, Orange_max, by = "Tree")
+
+kable(Orange_table, 
+      col.names = c("Tree", "min age", "min circumference","max age", "max circumference"),
+      align = "c", 
+      caption = "Min and max age and circumference by tree group", 
+      footnote = "5 trees were followed durign this study.")
+
+###################################
+##### Table function ####
+###################################
+Orange_table_kbl(Orange, "ENG")
 
 ###################################
 ##### render ####

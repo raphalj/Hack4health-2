@@ -1,7 +1,7 @@
 ---
-title: 'Orange study'
-subtitle: "English report"
-author: "Author: RJ LB LV TB"
+title: 'Respi viruses - flash study'
+subtitle: "Wastewater team"
+author: "Author: RJ"
 format:  
   docx: 
     toc: true
@@ -22,21 +22,38 @@ execute:
 ```{r}
 #| label: load packages and data
 load("../wd.RData")
-Lng <- "EN"
 ```
 
-## Table
+## Quarto
 
-The table below show the circumference of the trees at the beginning and ending of the study.
-```{r table, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
-# knitr::include_graphics(paste0("../",Lng,"/table_orange.png"))
-get(paste0("table_orange_",Lng))
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
 ```
 
+You can add options to executable code like this
 
-## Plot
-The plot below show the evolution of the circumference of the trees.
-```{r plot, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
-knitr::include_graphics(paste0("../",Lng,"/Plot_Circum150_age.png"))
+```{r}
+#| echo: false
+2 * 2
 ```
+
+<!-- ```{r} -->
+<!-- #| label: tbl-samples -->
+<!-- #| tbl-cap: "Samples analysed" -->
+<!-- #| echo: true -->
+<!-- table_sample -->
+<!-- ``` -->
+
+
+## Ct correlation CENTRICON vs AMICON
+
+@fig-cor_ct shows the correlation between the Ct values measured using Amicon or Centricon.
+
+![Ct correlation by idprotocol](../Plot_Circum150_age_EN.png){#fig-cor_ct}
 

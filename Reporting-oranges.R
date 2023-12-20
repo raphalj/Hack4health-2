@@ -8,13 +8,12 @@
 #| render in the present script
 #| use github to collaborate on project each member developing a part of the code
 
-.libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
-
-Table_lng <- read.csv("//sciensano.be/FS/louise.vaes/4. R/Hack4Health23/Hack4health-2/figure_translation.csv")
-
 ###################################
 ##### package and data ####
 ###################################
+.libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
+# getwd()
+# file.exists("figure_translation.csv")
 library(dplyr)
 library(quarto)
 library(ggplot2)
@@ -23,54 +22,42 @@ data("Orange")
 
 # load functions
 source("fct.R")
+Table_lng <- read.csv("figure_translation.csv")
+
 
 ###################################
 ##### Figure 1 ####
 ###################################
+#| save_EN, FR, NL
+#| filter
+
+# ggplot(aes(x = sampledate, y = ct, colour = target)) +
+#   geom_point(size = 3, na.rm = TRUE) +
+#   geom_line(size = 1.2, na.rm = TRUE) +
+#   scale_y_reverse() +
+#   scale_x_date(date_labels = "%Yw%W", breaks = "1 week") +
+#   labs(subtitle = area, x = "", y = "Ct", colour = "")
+
 Orange %>%
   ggplot(aes(x = circumference, y = age, colour = Tree)) +
   geom_point()
 
 ###################################
-##### figure 2 with sciensano theme ####
-###################################
-#| same figure with sciensano theme
-
-###################################
-##### figure 3 ####
-###################################
-#| same figure produced by a function save in fct.R
-#| fct with language in argument
-
-###################################
-##### Table 1 ####
-###################################
-Orange_min <- Orange %>%
-  group_by(Tree) %>%
-  summarise_at(vars(c(age, circumference)), list(min = min))
-
-Orange_max <- Orange %>%
-  group_by(Tree) %>%
-  summarise_at(vars(c(age, circumference)), list(max = max))
-
-Orange_table <- merge(Orange_min, Orange_max, by = "Tree")
-
-kable(Orange_table, 
-      col.names = c("Tree", "min age", "min circumference","max age", "max circumference"),
-      align = "c", 
-      caption = "Min and max age and circumference by tree group", 
-      footnote = "5 trees were followed durign this study.")
-
-###################################
 ##### Table function ####
 ###################################
-Data <- Orange
-Lng <- "EN"
-Orange_table_kbl(Orange, Table_lng, "FR")
+#| to do
+#| col names
+#| accents
+
+table_orange_FR <- Orange_table_kbl(Orange, Table_lng, "FR")
+table_orange_NL <- Orange_table_kbl(Orange, Table_lng, "NL")
+table_orange_EN <- Orange_table_kbl(Orange, Table_lng, "EN")
 
 ###################################
 ##### render ####
 ###################################
+#| quarto
+
 # save image
 # rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
 # save.image("./wd.RData")

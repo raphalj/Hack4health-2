@@ -6,6 +6,8 @@
 
 #### Table ####
 Orange_table_kbl <- function(Data, Language){
+  
+  
  Data_min <- Data %>%
     group_by(Tree) %>%
     summarise_at(vars(c(age, circumference)), list(min = min))

@@ -10,6 +10,7 @@
 
 .libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
 
+Table_lng <- read.csv("//sciensano.be/FS/louise.vaes/4. R/Hack4Health23/Hack4health-2/figure_translation.csv")
 
 ###################################
 ##### package and data ####

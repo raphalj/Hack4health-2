@@ -1,0 +1,65 @@
+---
+title: 'Respi viruses - flash study'
+subtitle: "Wastewater team"
+author: "Author: RJ"
+format:  
+  html: 
+    toc: true
+    # css: style.css
+    # page-layout: full
+editor: source
+crossref:
+  fig-title: '**Figure**'
+  fig-labels: arabic
+  title-delim: "**:**"
+execute:
+  echo: false
+  warning: false
+# bibliography: bibli.bib
+# csl: style.csl
+---
+
+```{r}
+#| label: load packages and data
+library(officer)
+library(officedown)
+library(flextable)
+library(knitr)
+library(dplyr)
+
+load("../wd.RData")
+```
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+# ```{r}
+# #| label: tbl-samples
+# #| tbl-cap: "Samples analysed"
+# #| echo: true
+# 
+# table_sample
+# ```
+
+
+## Ct correlation CENTRICON vs AMICON
+
+Figure @fig-cor_ct shows the correlation between the Ct values measured using Amicon or Centricon.
+
+![Ct correlation by idprotocol](Rplot.png){#fig-cor_ct}

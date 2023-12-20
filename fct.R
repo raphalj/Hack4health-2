@@ -7,7 +7,7 @@
 Lng_sel <- function(Type, Var, Lng){
   Lng_sel <- Table_lng %>%
     filter(type == Type, str_detect(var, Var)) %>%
-    select(Lng) %>%
+    select(all_of(Lng)) %>%
     as.vector %>%
     unlist
   return(Lng_sel)
@@ -42,11 +42,12 @@ Orange_table_kbl <- function(Data, Table_lng, Lng){
   
   Data_table <- merge(Data_min, Data_max, by = "Tree")
   
-  kable(Data_table, 
+  kable(Data_table, "pipe",
         # col.names = c("Tree", "min age", "min circumference","max age", "max circumference"),
         col.names = colnames,
         align = "c", 
         # caption = "Min and max age and circumference by tree group", 
-        caption = caption)
+        caption = caption, 
+        label = "Orange_table")
   
 }

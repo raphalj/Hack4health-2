@@ -14,11 +14,14 @@
 .libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
 # getwd()
 # file.exists("figure_translation.csv")
+# webshot::install_phantomjs()
 library(dplyr)
 library(quarto)
 library(ggplot2)
 library(knitr)
 library(stringr)
+library(kableExtra)
+library(readr)
 data("Orange")
 
 # load functions
@@ -51,8 +54,11 @@ Orange %>%
 #| accents: ok
 
 table_orange_FR <- Orange_table_kbl(Orange, Table_lng, "FR")
+# save_kable(table_orange_FR, "FR/table_orange.txt")
 table_orange_NL <- Orange_table_kbl(Orange, Table_lng, "NL")
+# save_kable(table_orange_NL, "NL/table_orange.txt")
 table_orange_EN <- Orange_table_kbl(Orange, Table_lng, "EN")
+# save_kable(table_orange_EN, "EN/table_orange.png")
 
 ###################################
 ##### render ####

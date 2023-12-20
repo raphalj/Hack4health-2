@@ -1,2 +1,2 @@
-.libPaths( "//sciensano.be/fs/1102_EPIVG_Crisis/Crise coronavirus/Surveillance/Wastewater surveillance/PROJECTS/CodeLibraryR/librairies/R/4.3.2" )
+.libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
 cat("Profile loaded \n")

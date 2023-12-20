@@ -21,6 +21,9 @@ library(ggplot2)
 library(knitr)
 data("Orange")
 
+# load functions
+source("fct.R")
+
 ###################################
 ##### Figure 1 ####
 ###################################
@@ -61,15 +64,17 @@ kable(Orange_table,
 ###################################
 ##### Table function ####
 ###################################
-Orange_table_kbl(Orange, "ENG")
+Data <- Orange
+Lng <- "EN"
+Orange_table_kbl(Orange, Table_lng, "FR")
 
 ###################################
 ##### render ####
 ###################################
 # save image
-rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
-save.image("./wd.RData")
-
-# render quarto
-quarto_render("report.qmd", output_format = "html")
+# rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
+# save.image("./wd.RData")
+# 
+# # render quarto
+# quarto_render("report.qmd", output_format = "html")
 # shell.exec(file.path("report.html", fsep = "\\"))

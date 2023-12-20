@@ -8,46 +8,61 @@
 #| render in the present script
 #| use github to collaborate on project each member developing a part of the code
 
-.libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
-  # install.packages("ggplot")
-
 ###################################
 ##### package and data ####
 ###################################
+.libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
+# getwd()
+# file.exists("figure_translation.csv")
 library(dplyr)
 library(quarto)
-  library(ggplot)
 library(ggplot2)
+library(knitr)
+library(stringr)
 data("Orange")
+
+# load functions
+source("fct.R")
+Table_lng <- read.csv("figure_translation.csv", encoding = "latin1")
+
 
 ###################################
 ##### Figure 1 ####
 ###################################
+#| save_EN, FR, NL
+#| filter
+
+# ggplot(aes(x = sampledate, y = ct, colour = target)) +
+#   geom_point(size = 3, na.rm = TRUE) +
+#   geom_line(size = 1.2, na.rm = TRUE) +
+#   scale_y_reverse() +
+#   scale_x_date(date_labels = "%Yw%W", breaks = "1 week") +
+#   labs(subtitle = area, x = "", y = "Ct", colour = "")
+
 Orange %>%
-  filter(circumference<150) %>%
   ggplot(aes(x = circumference, y = age, colour = Tree)) +
   geom_point()
 
-ggsave("plot_circum150_age_EN.png")
 ###################################
-##### figure 2 with sciensano theme ####
+##### Table function ####
 ###################################
-#| same figure with sciensano theme
+#| to do
+#| col names
+#| accents: ok
 
-###################################
-##### figure 3 ####
-###################################
-#| same figure produced by a function save in fct.R
-#| fct with language in argument
-
+table_orange_FR <- Orange_table_kbl(Orange, Table_lng, "FR")
+table_orange_NL <- Orange_table_kbl(Orange, Table_lng, "NL")
+table_orange_EN <- Orange_table_kbl(Orange, Table_lng, "EN")
 
 ###################################
 ##### render ####
 ###################################
-# save image
-rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
-save.image("./wd.RData")
+#| quarto
 
-# render quarto
-quarto_render("report.qmd", output_format = "html")
+# save image
+# rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
+# save.image("./wd.RData")
+# 
+# # render quarto
+# quarto_render("report.qmd", output_format = "html")
 # shell.exec(file.path("report.html", fsep = "\\"))

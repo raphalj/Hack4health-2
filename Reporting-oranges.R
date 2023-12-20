@@ -8,6 +8,8 @@
 #| render in the present script
 #| use github to collaborate on project each member developing a part of the code
 
+.libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
+
 
 ###################################
 ##### package and data ####

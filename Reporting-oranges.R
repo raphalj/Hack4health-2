@@ -61,8 +61,8 @@ table_orange_EN <- Orange_table_kbl(Orange, Table_lng, "EN")
 
 # save image
 # rm(list = ls()[grep(pattern = "df.raw", ls(), invert = F)])
-# save.image("./wd.RData")
-# 
-# # render quarto
-# quarto_render("report.qmd", output_format = "html")
-# shell.exec(file.path("report.html", fsep = "\\"))
+save.image("./wd.RData")
+
+# render quarto
+quarto_render("./quarto/Reporting-oranges.qmd", output_format = "docx")
+shell.exec(file.path("quarto", "Reporting-oranges.docx", fsep = "\\"))

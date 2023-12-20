@@ -37,6 +37,12 @@ Orange %>%
 #| same figure produced by a function save in fct.R
 #| fct with language in argument
 
+###################################
+##### Table 1 ####
+###################################
+orange_mean <- Orange %>%
+  group_by(Tree) %>%
+  summarise_at(vars(c(age, circumference)), list(mean = mean))
 
 ###################################
 ##### render ####

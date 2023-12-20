@@ -18,11 +18,12 @@ library(dplyr)
 library(quarto)
 library(ggplot2)
 library(knitr)
+library(stringr)
 data("Orange")
 
 # load functions
 source("fct.R")
-Table_lng <- read.csv("figure_translation.csv")
+Table_lng <- read.csv("figure_translation.csv", encoding = "latin1")
 
 
 ###################################
@@ -47,7 +48,7 @@ Orange %>%
 ###################################
 #| to do
 #| col names
-#| accents
+#| accents: ok
 
 table_orange_FR <- Orange_table_kbl(Orange, Table_lng, "FR")
 table_orange_NL <- Orange_table_kbl(Orange, Table_lng, "NL")

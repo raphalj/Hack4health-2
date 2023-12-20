@@ -50,3 +50,7 @@ Orange_table_kbl <- function(Data, Table_lng, Lng){
         caption = caption)
   
 }
+
+
+  
+  

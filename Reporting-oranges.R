@@ -32,16 +32,31 @@ Table_lng <- read.csv("figure_translation.csv", encoding = "latin1")
 #| save_EN, FR, NL
 #| filter
 
-# ggplot(aes(x = sampledate, y = ct, colour = target)) +
-#   geom_point(size = 3, na.rm = TRUE) +
-#   geom_line(size = 1.2, na.rm = TRUE) +
-#   scale_y_reverse() +
-#   scale_x_date(date_labels = "%Yw%W", breaks = "1 week") +
-#   labs(subtitle = area, x = "", y = "Ct", colour = "")
+for (Lng in c("EN", "FR", "NL")) {
+  
+title_i <- Lng_sel("Orange_plot", "title", Lng)
+xaxis_i <- Lng_sel("Orange_plot", "xaxis", Lng)
+yaxis_i <- Lng_sel("Orange_plot", "yaxis", Lng)
+category_i <- Lng_sel("Orange_plot", "color", Lng)
+
+# title_i
+# xaxis_i
+# yaxis_i
+# category_i
 
 Orange %>%
+  filter(circumference<150) %>%
   ggplot(aes(x = circumference, y = age, colour = Tree)) +
-  geom_point()
+  geom_point(size = 3, na.rm = TRUE) +
+  # geom_line(size = 1.2, na.rm = TRUE) +
+  labs(
+    # subtitle = title,
+    x = xaxis_i, y = yaxis_i, colour = category_i)
+
+ggsave(paste0("Plot_Circum150_age_",Lng,".png"))
+    
+  }
+  
 
 ###################################
 ##### Table function ####

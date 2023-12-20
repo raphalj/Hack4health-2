@@ -1,4 +1,4 @@
 type,var,FR,NL,EN
 Orange_table,colnames,"c(""Tree"", ""min age"", ""min circumference"",""max age"", ""max circumference"")","c(""Tree"", ""min age"", ""min circumference"",""max age"", ""max circumference"")","c(""Tree"", ""min age"", ""min circumference"",""max age"", ""max circumference"")"
-Orange_table,caption,Min and max age and circumference by tree group,Min and max age and circumference by tree group,Min and max age and circumference by tree group
-Orange_table,footnote,5 trees were followed durign this study.,5 trees were followed durign this study.,5 trees were followed durign this study.
+Orange_table,caption,Âge et circonférence minimum et maximum par groupe d'arbres,Minimale en maximale leeftijd en omtrek per boomgroep,Min and max age and circumference by tree group
+Orange_table,footnote,5 arbres ont été suivis au cours de cette étude.,5 bomen werden gevolgd tijdens deze studie.,5 trees were followed durign this study.

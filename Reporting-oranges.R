@@ -60,7 +60,6 @@ for (Lng in c("EN", "FR", "NL")) {
   
 }
 
-
 ###################################
 ##### Table function ####
 ###################################
@@ -85,5 +84,8 @@ table_orange_EN <- Orange_table_kbl(Orange, Table_lng, "EN")
 save.image("./wd.RData")
 
 # render quarto
-quarto_render("./quarto/Reporting-oranges.qmd", output_format = "docx")
-shell.exec(file.path("quarto", "Reporting-oranges.docx", fsep = "\\"))
+for(i in c("EN", "FR", "NL")){
+  quarto_render(paste0("./quarto/Reporting-oranges_", i, ".qmd"), output_format = "docx")
+}
+
+shell.exec(file.path("quarto", paste0("Reporting-oranges_", i, ".docx"), fsep = "\\"))

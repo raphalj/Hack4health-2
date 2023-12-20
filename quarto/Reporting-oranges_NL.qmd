@@ -1,0 +1,44 @@
+---
+title: 'Orange study'
+subtitle: "English report"
+author: "Author: RJ LB LV TB"
+format:  
+  docx: 
+    toc: true
+    # css: style.css
+    # page-layout: full
+editor: source
+crossref:
+  fig-title: '**Figure**'
+  fig-labels: arabic
+  title-delim: "**:**"
+execute:
+  echo: false
+  warning: false
+# bibliography: bibli.bib
+# csl: style.csl
+---
+
+```{r}
+#| label: load packages and data
+load("../wd.RData")
+Lng <- "NL"
+```
+
+## Table
+
+The table below show the circumference of the trees at the beginning and ending of the study.
+```{r table, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
+# knitr::include_graphics(paste0("../",Lng,"/table_orange.png"))
+get(paste0("table_orange_",Lng))
+```
+
+
+## Plot
+The plot @fig-cor_ct below show the evolution of the circumference of the trees.
+
+```{r plot, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
+knitr::include_graphics(paste0("../plots/Plot_Circum150_age_",Lng,".png"))
+```
+![Circumference of trees](../plots/Plot_Circum150_age_EN.png){#fig-cor_ct}
+

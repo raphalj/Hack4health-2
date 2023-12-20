@@ -1,9 +1,0 @@
-Table: Minimale en maximale leeftijd en omtrek per boomgroep
-
-| Boom | Min leeftijd | Min omtrek | Max leeftijd | Max omtrek |
-|:----:|:------------:|:----------:|:------------:|:----------:|
-|  1   |     118      |     30     |     1582     |    145     |
-|  2   |     118      |     33     |     1582     |    203     |
-|  3   |     118      |     30     |     1582     |    140     |
-|  4   |     118      |     32     |     1582     |    214     |
-|  5   |     118      |     30     |     1582     |    177     |

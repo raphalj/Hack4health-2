@@ -9,25 +9,26 @@
 #| use github to collaborate on project each member developing a part of the code
 
 .libPaths( "//sciensano.be/fs/1100_EPIVG_Employee/20231220_Hackathon/TranslationPlot/libraries" )
-
-Table_lng <- read.csv("//sciensano.be/FS/louise.vaes/4. R/Hack4Health23/Hack4health-2/figure_translation.csv")
+  # install.packages("ggplot")
 
 ###################################
 ##### package and data ####
 ###################################
 library(dplyr)
 library(quarto)
+  library(ggplot)
 library(ggplot2)
-library(knitr)
 data("Orange")
 
 ###################################
 ##### Figure 1 ####
 ###################################
 Orange %>%
+  filter(circumference<150) %>%
   ggplot(aes(x = circumference, y = age, colour = Tree)) +
   geom_point()
 
+ggsave("plot_circum150_age_EN.png")
 ###################################
 ##### figure 2 with sciensano theme ####
 ###################################
@@ -39,29 +40,6 @@ Orange %>%
 #| same figure produced by a function save in fct.R
 #| fct with language in argument
 
-###################################
-##### Table 1 ####
-###################################
-Orange_min <- Orange %>%
-  group_by(Tree) %>%
-  summarise_at(vars(c(age, circumference)), list(min = min))
-
-Orange_max <- Orange %>%
-  group_by(Tree) %>%
-  summarise_at(vars(c(age, circumference)), list(max = max))
-
-Orange_table <- merge(Orange_min, Orange_max, by = "Tree")
-
-kable(Orange_table, 
-      col.names = c("Tree", "min age", "min circumference","max age", "max circumference"),
-      align = "c", 
-      caption = "Min and max age and circumference by tree group", 
-      footnote = "5 trees were followed durign this study.")
-
-###################################
-##### Table function ####
-###################################
-Orange_table_kbl(Orange, "ENG")
 
 ###################################
 ##### render ####

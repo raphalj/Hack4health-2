@@ -25,19 +25,19 @@ load("../wd.RData")
 Lng <- "FR"
 ```
 
-## Table
+## Tableau
 
-The table below show the circumference of the trees at the beginning and ending of the study.
+Le tableau ci-dessous présente la circonférence des arbres au début et à la fin de l'étude.
 ```{r table, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
 # knitr::include_graphics(paste0("../",Lng,"/table_orange.png"))
 get(paste0("table_orange_",Lng))
 ```
 
 
-## Plot
-The plot @fig-cor_ct below show the evolution of the circumference of the trees.
+## Figure
+Le tracé @fig-cor_ct ci-dessous montre l'évolution de la circonférence des arbres.
 
-```{r plot, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
+```{r plot, echo=FALSE, out.width="100%", fig.show='hold',fig.align='center'}
 knitr::include_graphics(paste0("../plots/Plot_Circum150_age_",Lng,".png"))
 ```
 ![Circumference of trees](../plots/Plot_Circum150_age_EN.png){#fig-cor_ct}

@@ -37,7 +37,7 @@ get(paste0("table_orange_",Lng))
 ## Plot
 The plot @fig-cor_ct below show the evolution of the circumference of the trees.
 
-```{r plot, echo=FALSE, out.width="40%", fig.show='hold',fig.align='center'}
+```{r plot, echo=FALSE, out.width="100%", fig.show='hold',fig.align='center'}
 knitr::include_graphics(paste0("../plots/Plot_Circum150_age_",Lng,".png"))
 ```
 ![Circumference of trees](../plots/Plot_Circum150_age_EN.png){#fig-cor_ct}
